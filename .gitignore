@@ -2,7 +2,7 @@
 
 # Ignore private keys and secrets
 .env.private_keys
-
+ApiKey_HVI5YC18WLLM.p8
 
 # dependencies
 node_modules/
