@@ -87,12 +87,29 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v2
 
-    - name: Setup Ruby
+      # Decrypt the .env.secrets file using the passphrase stored in GitHub Secrets
+    - name: Decrypt .env.secrets file
+      run: |
+        openssl aes-256-cbc -d -in .env.secrets.enc -out .env.secrets -pass pass:${{ secrets.SECRET_PASSPHRASE }}
+
+    # Load the decrypted secrets into the environment
+    - name: Load .env.secrets
+      run: source .env.secrets
+
+    # Decode and decrypt the SSH private key
+    - name: Decode and Decrypt SSH Key
+      run: |
+        echo "$SSH_PRIVATE_KEY_ENC" | base64 -d > id_rsa.enc
+        openssl aes-256-cbc -d -in id_rsa.enc -out ~/.ssh/id_rsa -pass pass:${{ secrets.SECRET_PASSPHRASE }}
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    - name: Install Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.7'
 
-    - name: Install dependencies
+    - name: Install Fastlane
       run: |
         gem install bundler
         bundle install
@@ -123,5 +140,9 @@ jobs:
         APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
         APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
+        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+        TEAM_ID: ${{ secrets.TEAM_ID }}
+        MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+
 
 # delete env when done ??
