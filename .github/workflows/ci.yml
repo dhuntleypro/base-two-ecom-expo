@@ -15,6 +15,13 @@ jobs:
       - name: Add GitHub Secrets 1
         env:
           GH_TOKEN: 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
+          SECRET_VALUE: $GITHUB_TOKEN
+        run: |
+          gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+      
+      - name: Add GitHub Secrets 1
+        env:
+          GH_TOKEN: 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
           SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_KEY_ID
         run: |
           gh secret set APP_STORE_CONNECT_API_KEY_KEY_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
