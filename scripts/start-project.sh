@@ -51,14 +51,14 @@ else
 fi
 
 
-# GitHub CLI Authentication (Make sure you have the GITHUB_TOKEN environment variable)
-if [ -z "$GITHUB_TOKEN" ]; then
-  echo "GITHUB_TOKEN is missing! Set it in the .env file."
+# GitHub CLI Authentication (Make sure you have the GIT_TOKEN environment variable)
+if [ -z "$GIT_TOKEN" ]; then
+  echo "GIT_TOKEN is missing! Set it in the .env file."
   exit 1
 fi
 
 echo "Authenticating GitHub CLI..."
-echo "$GITHUB_TOKEN" | gh auth login --with-token
+echo "$GIT_TOKEN" | gh auth login --with-token
 
 # Set secrets using GitHub CLI
 echo "Setting GitHub secrets..."
