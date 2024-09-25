@@ -6,95 +6,83 @@ on:
       - main
 
 jobs:
-  add_main:
-    runs-on: macos-latest
-    
-    steps:
-      - name: Add GitHub Secrets 1
-        env:
-          GH_TOKEN: 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
-          SECRET_VALUE: $GITHUB_TOKEN
-        run: |
-          gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
-      
   add_secrets:
     runs-on: macos-latest
     
     steps:
-      - name: Add GitHub Secrets 1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $FASTLANE_USER
+      - name: Authenticate GitHub CLI
         run: |
-          gh secret set FASTLANE_USER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
-        - name: Add GitHub Secrets 5
-#         env:
-#           GH_TOKEN: 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
-#           SECRET_VALUE: $FASTLANE_PASSWORD
-#         run: |
-#           gh secret set FASTLANE_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
-      
+          echo ${{ GITHUB_TOKEN }} | gh auth login --with-token
 
-      - name: Add GitHub Secrets 2
+      - name: Add GITHUB_TOKEN as GitHub Secret
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $APPLE_ID
-        run: | 
-          gh secret set APPLE_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-      
-      - name: Add GitHub Secrets 3
-        env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $APP_IDENTIFIER
+          SECRET_VALUE: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh secret set APP_IDENTIFIER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
-      
-      - name: Add GitHub Secrets 4
+          gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add FASTLANE_USER as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $TEAM_ID
+          SECRET_VALUE: ${{ secrets.FASTLANE_USER }}
+        run: |
+          gh secret set FASTLANE_USER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add FASTLANE_PASSWORD as GitHub Secret
+        env:
+          SECRET_VALUE: ${{ secrets.FASTLANE_PASSWORD }}
+        run: |
+          gh secret set FASTLANE_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add APPLE_ID as GitHub Secret
+        env:
+          SECRET_VALUE: ${{ secrets.APPLE_ID }}
+        run: |
+          gh secret set APPLE_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add APP_IDENTIFIER as GitHub Secret
+        env:
+          SECRET_VALUE: ${{ secrets.APP_IDENTIFIER }}
+        run: |
+          gh secret set APP_IDENTIFIER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add TEAM_ID as GitHub Secret
+        env:
+          SECRET_VALUE: ${{ secrets.TEAM_ID }}
         run: |
           gh secret set TEAM_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-      
-      - name: Add GitHub Secrets 5
+
+      - name: Add APP_STORE_CONNECT_API_KEY_ID as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_ID
+          SECRET_VALUE: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
         run: |
-          gh secret set APP_STORE_CONNECT_API_KEY_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
-      
-      - name: Add GitHub Secrets 6
+          gh secret set APP_STORE_CONNECT_API_KEY_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+      - name: Add APP_STORE_CONNECT_API_ISSUER_ID as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $APP_STORE_CONNECT_API_ISSUER_ID
+          SECRET_VALUE: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         run: |
           gh secret set APP_STORE_CONNECT_API_ISSUER_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-      
-      - name: Add GitHub Secrets 7
+
+      - name: Add APP_STORE_CONNECT_API_KEY_PATH as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_PATH
+          SECRET_VALUE: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
         run: |
           gh secret set APP_STORE_CONNECT_API_KEY_PATH -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-  
-      - name: Add GitHub Secrets 8
+
+      - name: Add MATCH_GIT_URL as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $MATCH_GIT_URL
+          SECRET_VALUE: ${{ secrets.MATCH_GIT_URL }}
         run: |
           gh secret set MATCH_GIT_URL -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-      
-      - name: Add GitHub Secrets 9
+
+      - name: Add MATCH_PASSWORD as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $MATCH_PASSWORD
+          SECRET_VALUE: ${{ secrets.MATCH_PASSWORD }}
         run: |
           gh secret set MATCH_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
-      
-      - name: Add GitHub Secrets 10
+
+      - name: Add SSH_PRIVATE_KEY as GitHub Secret
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
-          SECRET_VALUE: $SSH_PRIVATE_KEY
+          SECRET_VALUE: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           gh secret set SSH_PRIVATE_KEY -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
 
@@ -106,7 +94,6 @@ jobs:
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
 
-
   build:
     runs-on: macos-latest
     needs: login
@@ -114,16 +101,13 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v2
 
-      # Decrypt the .env.secrets file using the passphrase stored in GitHub Secrets
     - name: Decrypt .env.secrets file
       run: |
         openssl aes-256-cbc -d -in .env.secrets.enc -out .env.secrets -pass pass:${{ secrets.SECRET_PASSPHRASE }}
 
-    # Load the decrypted secrets into the environment
     - name: Load .env.secrets
       run: source .env.secrets
 
-    # Decode and decrypt the SSH private key
     - name: Decode and Decrypt SSH Key
       run: |
         echo "$SSH_PRIVATE_KEY_ENC" | base64 -d > id_rsa.enc
@@ -150,17 +134,14 @@ jobs:
     - name: Log in to Expo
       run: expo login --username ${{ secrets.EXPO_USERNAME }} --password ${{ secrets.EXPO_PASSWORD }}
 
-    - name: Install Fastlane
-      run: bundle install
-
     - name: Authenticate GitHub CLI
       run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-
 
     - name: Setup Fastlane and CocoaPods
       run: |
         brew install cocoapods
         bundle exec pod install --project-directory=ios
+
     - name: Set up SSH key for match
       run: |
         mkdir -p ~/.ssh
@@ -188,4 +169,209 @@ jobs:
         MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
 
 
-# delete env when done ??
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Build and Deploy iOS App
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   add_main:
+#     runs-on: macos-latest
+    
+#     steps:
+#       - name: Add GitHub Secrets 1
+#         env:
+#           GH_TOKEN: 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
+#           SECRET_VALUE: $GITHUB_TOKEN
+#         run: |
+#           gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+      
+#   add_secrets:
+#     runs-on: macos-latest
+    
+#     steps:
+#       - name: Add GitHub Secrets 1
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $FASTLANE_USER
+#         run: |
+#           gh secret set FASTLANE_USER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+    
+#       - name: Add GitHub Secrets 5
+#         env:
+#           GH_TOKEN: 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
+#           SECRET_VALUE: $FASTLANE_PASSWORD
+#         run: |
+#           gh secret set FASTLANE_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+      
+#       - name: Add GitHub Secrets 2
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $APPLE_ID
+#         run: | 
+#           gh secret set APPLE_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+      
+#       - name: Add GitHub Secrets 3
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $APP_IDENTIFIER
+#         run: |
+#           gh secret set APP_IDENTIFIER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+      
+#       - name: Add GitHub Secrets 4
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $TEAM_ID
+#         run: |
+#           gh secret set TEAM_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+      
+#       - name: Add GitHub Secrets 5
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_ID
+#         run: |
+#           gh secret set APP_STORE_CONNECT_API_KEY_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+      
+#       - name: Add GitHub Secrets 6
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $APP_STORE_CONNECT_API_ISSUER_ID
+#         run: |
+#           gh secret set APP_STORE_CONNECT_API_ISSUER_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+      
+#       - name: Add GitHub Secrets 7
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_PATH
+#         run: |
+#           gh secret set APP_STORE_CONNECT_API_KEY_PATH -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+  
+#       - name: Add GitHub Secrets 8
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $MATCH_GIT_URL
+#         run: |
+#           gh secret set MATCH_GIT_URL -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+      
+#       - name: Add GitHub Secrets 9
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $MATCH_PASSWORD
+#         run: |
+#           gh secret set MATCH_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+      
+#       - name: Add GitHub Secrets 10
+#         env:
+#           GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+#           SECRET_VALUE: $SSH_PRIVATE_KEY
+#         run: |
+#           gh secret set SSH_PRIVATE_KEY -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
+
+#   login:
+#     runs-on: macos-latest
+#     needs: add_secrets
+#     steps:
+#       - name: Authenticate GitHub CLI
+#         run: |
+#           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+
+
+#   build:
+#     runs-on: macos-latest
+#     needs: login
+#     steps:
+#     - name: Checkout the code
+#       uses: actions/checkout@v2
+
+#       # Decrypt the .env.secrets file using the passphrase stored in GitHub Secrets
+#     - name: Decrypt .env.secrets file
+#       run: |
+#         openssl aes-256-cbc -d -in .env.secrets.enc -out .env.secrets -pass pass:${{ secrets.SECRET_PASSPHRASE }}
+
+#     # Load the decrypted secrets into the environment
+#     - name: Load .env.secrets
+#       run: source .env.secrets
+
+#     # Decode and decrypt the SSH private key
+#     - name: Decode and Decrypt SSH Key
+#       run: |
+#         echo "$SSH_PRIVATE_KEY_ENC" | base64 -d > id_rsa.enc
+#         openssl aes-256-cbc -d -in id_rsa.enc -out ~/.ssh/id_rsa -pass pass:${{ secrets.SECRET_PASSPHRASE }}
+#         chmod 600 ~/.ssh/id_rsa
+#         ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+#     - name: Install Ruby
+#       uses: ruby/setup-ruby@v1
+#       with:
+#         ruby-version: '2.7'
+
+#     - name: Install Fastlane
+#       run: |
+#         gem install bundler
+#         bundle install
+    
+#     - name: Install dependencies
+#       run: npm run start-project
+    
+#     - name: Install Expo CLI
+#       run: npm install -g expo-cli
+
+#     - name: Log in to Expo
+#       run: expo login --username ${{ secrets.EXPO_USERNAME }} --password ${{ secrets.EXPO_PASSWORD }}
+
+#     - name: Install Fastlane
+#       run: bundle install
+
+#     - name: Authenticate GitHub CLI
+#       run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+
+
+#     - name: Setup Fastlane and CocoaPods
+#       run: |
+#         brew install cocoapods
+#         bundle exec pod install --project-directory=ios
+#     - name: Set up SSH key for match
+#       run: |
+#         mkdir -p ~/.ssh
+#         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#         chmod 600 ~/.ssh/id_rsa
+#         ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+#     - name: Set up Match signing certificates
+#       run: bundle exec fastlane ios setup_signing
+#       env:
+#         FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+#         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+#         GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+
+#     - name: Build and deploy to the App Store
+#       run: bundle exec fastlane ios deploy_all
+#       env:
+#         FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+#         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+#         APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+#         APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+#         APP_STORE_CONNECT_API_KEY_PATH: ${{ secrets.APP_STORE_CONNECT_API_KEY_PATH }}
+#         APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+#         TEAM_ID: ${{ secrets.TEAM_ID }}
+#         MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+
+
+# # delete env when done ??
