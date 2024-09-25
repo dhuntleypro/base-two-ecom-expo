@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Add GitHub Secrets 1
         env:
-          GH_TOKEN:  ${{ secrets.GITHUB_TOKEN }} 
+          GH_TOKEN: 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
           SECRET_VALUE: $GITHUB_TOKEN
         run: |
           gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
@@ -27,7 +27,14 @@ jobs:
           SECRET_VALUE: $FASTLANE_USER
         run: |
           gh secret set FASTLANE_USER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
+        - name: Add GitHub Secrets 5
+#         env:
+#           GH_TOKEN: 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
+#           SECRET_VALUE: $FASTLANE_PASSWORD
+#         run: |
+#           gh secret set FASTLANE_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
       
+
       - name: Add GitHub Secrets 2
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
