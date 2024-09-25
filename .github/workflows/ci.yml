@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Add GitHub Secrets 1
         env:
-          GH_TOKEN:  $GITHUB_TOKEN
+          GH_TOKEN: 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
           SECRET_VALUE: $GITHUB_TOKEN
         run: |
           gh secret set GITHUB_TOKEN -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
@@ -23,77 +23,77 @@ jobs:
     steps:
       - name: Add GitHub Secrets 1
         env:
-          GH_TOKEN: $GITHUB_TOKEN
+          GH_TOKEN: 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
           SECRET_VALUE: $FASTLANE_USER
         run: |
           gh secret set FASTLANE_USER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
       
       - name: Add GitHub Secrets 2
         env:
-          GH_TOKEN: $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $APPLE_ID
         run: | 
           gh secret set APPLE_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
       
       - name: Add GitHub Secrets 3
         env:
-          GH_TOKEN: $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $APP_IDENTIFIER
         run: |
           gh secret set APP_IDENTIFIER -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
       
       - name: Add GitHub Secrets 4
         env:
-          GH_TOKEN: $GITHUB_TOKEN #  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
+          GH_TOKEN: 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
           SECRET_VALUE: $TEAM_ID
         run: |
           gh secret set TEAM_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
       
       - name: Add GitHub Secrets 5
         env:
-          GH_TOKEN: $GITHUB_TOKEN #  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
+          GH_TOKEN: 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
           SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_ID
         run: |
           gh secret set APP_STORE_CONNECT_API_KEY_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY 
       
       - name: Add GitHub Secrets 6
         env:
-          GH_TOKEN: $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $APP_STORE_CONNECT_API_ISSUER_ID
         run: |
           gh secret set APP_STORE_CONNECT_API_ISSUER_ID -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
       
       - name: Add GitHub Secrets 7
         env:
-          GH_TOKEN:  $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $APP_STORE_CONNECT_API_KEY_PATH
         run: |
           gh secret set APP_STORE_CONNECT_API_KEY_PATH -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
   
       - name: Add GitHub Secrets 8
         env:
-          GH_TOKEN:  $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $MATCH_GIT_URL
         run: |
           gh secret set MATCH_GIT_URL -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
       
       - name: Add GitHub Secrets 9
         env:
-          GH_TOKEN:  $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $MATCH_PASSWORD
         run: |
           gh secret set MATCH_PASSWORD -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
       
       - name: Add GitHub Secrets 10
         env:
-          GH_TOKEN:  $GITHUB_TOKEN 
+          GH_TOKEN: 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
           SECRET_VALUE: $SSH_PRIVATE_KEY
         run: |
           gh secret set SSH_PRIVATE_KEY -b "$SECRET_VALUE" -R $GITHUB_REPOSITORY
 
   login:
     runs-on: macos-latest
-    
+    needs: add_secrets
     steps:
       - name: Authenticate GitHub CLI
         run: |
@@ -102,7 +102,7 @@ jobs:
 
   build:
     runs-on: macos-latest
-
+    needs: login
     steps:
     - name: Checkout the code
       uses: actions/checkout@v2
